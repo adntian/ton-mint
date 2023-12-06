@@ -71,7 +71,7 @@ const getPhrase = () => {
   }
 }
 
-const mnemonicList = getPhrase().filter(t=>t && t.indexOf('#')==-1 && (t.split(' ').length === 12 || t.split(' ').length === 24));
+const mnemonicList = getPhrase().map(t => t ? t.trim() : '').filter(t=>t && t.indexOf('#')==-1 && (t.split(' ').length === 12 || t.split(' ').length === 24));
 
 if (mnemonicList.length === 0) {
     console.error(`
