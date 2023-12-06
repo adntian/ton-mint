@@ -8,6 +8,18 @@ if [ ! -d "./node_modules" ]; then
   echo "依赖安装完成"
   echo "**********"
 fi
-nohup node index.js 2>&1 >> mint.log &
-echo "程序已经开始执行，以下内容是日志输出，可以直接ctrl+c退出查看日志"
-tail -f mint.log
+nohup node index.js >> mint.log 2>&1 &
+pid=$!
+
+# ctrl + c 退出时，杀死子进程，不要中断后台任务
+echo "如果要关闭任务，请执行 ./kill.sh"
+echo "#!/bin/bash" > kill.sh
+echo "kill $pid" >> kill.sh
+echio "rm kill.sh" >> kill.sh
+chmod +x kill.sh
+echo "****************"
+echo "当前程序输出的最新日志："
+tail -n 10 mint.log
+echo "****************"
+echo "程序已经开始执行，查看日志输出请执行以下命令："
+echo "tail -f mint.log"
