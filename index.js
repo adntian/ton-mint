@@ -83,6 +83,8 @@ if (mnemonicList.length === 0) {
     word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 word21 word22 word23 word24
     ******************************************************`)
   return
+} else {
+    console.log(`本次共发现${mnemonicList.length}个助记词`)
 }
 
 const checkStatus = (addr) => {
@@ -104,20 +106,24 @@ const checkStatus = (addr) => {
 }
 
 const run = () => {
-  console.log('检测状态');
-  checkStatus('EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c').then((res) => {
-    if (res) {
-      mnemonicList.forEach((t, index) => {
-        main(t, index + 1);
-      });
-    } else {
-      const waitTime = 10;
-      console.log(`合约被冻结，等待${waitTime}秒后重试，当前时间：`, new Date().toLocaleString());
-      setTimeout(() => {
-        run();
-      }, waitTime * 1000);
+  checkStatus('EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c').then(
+    (res) => {
+      if (res) {
+        mnemonicList.forEach((t, index) => {
+          main(t, index + 1);
+        });
+      } else {
+        const waitTime = 10;
+        console.log(
+          `合约被冻结，等待${waitTime}秒后重试，当前时间：`,
+          new Date().toLocaleString()
+        );
+        setTimeout(() => {
+          run();
+        }, waitTime * 1000);
+      }
     }
-  });
-}
+  );
+};
 
 run();
