@@ -51,12 +51,12 @@ async function main(mnemonic, index) {
   }
 }
 
-let mnemonic = [
+const mnemonics = [
   '这里写你的注记词1',
   '这里写你的注记词2',
   '这里写你的注记词3',
   '这里写你的注记词4',
 ];
-mnemonic.forEach((t, index) => {
+mnemonics.forEach((t, index) => {
   main(t, index + 1);
 });
