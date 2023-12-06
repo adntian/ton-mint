@@ -52,7 +52,7 @@ async function main(mnemonic, index) {
       console.log(transfer);
       count++;
       console.log(`第${index}个钱包，第${count}次成功`);
-    } catch (error) {console.log(error)}
+    } catch (error) {}
   }
 }
 
