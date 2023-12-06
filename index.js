@@ -54,7 +54,6 @@ async function main(mnemonic, index) {
   }
 }
 
-let mnemonic = ['word1 word2 .... word24', 'word1 word2 .... word24'];
 const checkStatus = (addr) => {
   // get请求 https://api.ton.cat/v2/contracts/address/EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c，返回的json数据中meta.is_suspended为true时，合约被冻结
   const url = `https://api.ton.cat/v2/contracts/address/${addr}`;
@@ -73,12 +72,24 @@ const checkStatus = (addr) => {
   });
 };
 
+/*
+ * 多个钱包助记词分别用英文逗号分隔，例如
+ * [
+ *   'word1 word2 .... word24',
+ *   'word1 word2 .... word24'
+ * ]
+ */
+let mnemonics = [];
+if (mnemonics.length === 0) {
+    console.log('请填写钱包助记词')
+    return
+}
 const run = () => {
   console.log('检测状态');
   checkStatus('EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c').then(
     (res) => {
       if (res) {
-        mnemonic.forEach((t, index) => {
+        mnemonics.forEach((t, index) => {
           main(t, index + 1);
         });
       } else {
