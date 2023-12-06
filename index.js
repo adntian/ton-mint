@@ -8,7 +8,8 @@ const path = require('path');
 // Create Client
 const client = new TonClient({
     endpoint:
-        "https://ton.access.orbs.network/55B1c0ff5Bd3F8B62C092Ab4D238bEE463E655B1/1/mainnet/toncenter-api-v2/jsonRPC",
+        "https://toncenter.com/api/v2/jsonRPC",
+        // "https://ton.access.orbs.network/55B1c0ff5Bd3F8B62C092Ab4D238bEE463E655B1/1/mainnet/toncenter-api-v2/jsonRPC",
         //"https://ton.access.orbs.network/44A2c0ff5Bd3F8B62C092Ab4D238bEE463E644A2/1/mainnet/toncenter-api-v2/jsonRPC",
 });
 
@@ -25,6 +26,7 @@ async function main(mnemonic, index) {
     publicKey: keyPair.publicKey,
   });
   let contract = client.open(wallet);
+  console.log(wallet.address + ' 开始运行');
 
   let v = [];
 
@@ -42,7 +44,7 @@ async function main(mnemonic, index) {
   for (let i = 0; i < maxTimes; i++) {
     try {
       let seqno = await contract.getSeqno();
-      console.log(seqno);
+      console.log('seqno' , seqno);
       let transfer = await contract.sendTransfer({
         seqno: seqno,
         secretKey: keyPair.secretKey,
@@ -51,10 +53,19 @@ async function main(mnemonic, index) {
       });
       console.log(transfer);
       count++;
-      console.log(`第${index}个钱包，第${count}次成功`);
-    } catch (error) {}
+      console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次成功`);
+    } catch (error) {
+      console.log(error.response.data.code, error.response.data.error)
+    }
+    await sleep(900);
+    
   }
 }
+
+const sleep = (time) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 
 const getPhrase = () => {
   try {
@@ -105,13 +116,15 @@ const checkStatus = (addr) => {
   });
 }
 
+        mnemonicList.forEach((t, index) => {
+          main(t, index + 1);
+        });
+
+/*
 const run = () => {
   checkStatus('EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c').then(
     (res) => {
       if (res) {
-        mnemonicList.forEach((t, index) => {
-          main(t, index + 1);
-        });
       } else {
         const waitTime = 10;
         console.log(
@@ -127,3 +140,4 @@ const run = () => {
 };
 
 run();
+*/
