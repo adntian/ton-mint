@@ -63,7 +63,7 @@ const client = new TonClient({
       count++;
       console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次成功`);
     } catch (error) {
-      console.log(error.response.data.code, error.response.data.error)
+      console.log(`第${index}个钱包：【${wallet.address}  】`, error.response.data.code, error.response.data.error)
     }
     
   }
