@@ -2,3 +2,4 @@ node_modules
 *.log
 *.txt
 kill.sh
+/pnpm-lock.yaml
