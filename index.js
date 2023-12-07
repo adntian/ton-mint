@@ -32,6 +32,11 @@ const client = new TonClient({
   console.log(wallet.address + ' 开始运行');
   let balance = await contract.getBalance();
   console.log(`第${index}个钱包：【${wallet.address}  】，余额：${balance}`)
+    if (balance == 0) {
+      console.log(`第${index}个钱包：【${wallet.address}  】，余额为0，3分钟后重试`)
+      await sleep(180000);
+      throw new Error('余额为0');
+    }
 
 
   let v = [];
@@ -68,7 +73,7 @@ const client = new TonClient({
     
   }
   } catch (err) {
-    console.log('create client error', err.response.data.code, err.response.data.error)
+    console.log('create client error', err.response && err.response.data ? err.response.data.code : err.response, err.response && err.response.data ? err.response.data.error : '')
     console.log(`重试第${index}个钱包`)
     main(mnemonic, index)
   }
