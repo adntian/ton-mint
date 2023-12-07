@@ -21,6 +21,7 @@ async function main(mnemonic, index) {
 const client = new TonClient({
     endpoint:
         "https://toncenter.com/api/v2/jsonRPC",
+        // "https://ton.access.orbs.network/55B2c0ff5Bd3F8B62C092Ab4D238bEE463E655B2/1/mainnet/toncenter-api-v2/jsonRPC"
         // "https://ton.access.orbs.network/55B1c0ff5Bd3F8B62C092Ab4D238bEE463E655B1/1/mainnet/toncenter-api-v2/jsonRPC",
         //"https://ton.access.orbs.network/44A2c0ff5Bd3F8B62C092Ab4D238bEE463E644A2/1/mainnet/toncenter-api-v2/jsonRPC",
 });
@@ -46,18 +47,23 @@ const client = new TonClient({
       internal({
         to: `EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c`,
         value: '0',
-        body: `data:application/json,{"p":"ton-20","op":"mint","tick":"nano","amt":"100000000000"}`,
+        body: 'data:application/json,{"p":"ton-20","op":"mint","tick":"nano","amt":"100000000000"}'
       })
     );
   }
   let count = 0;
+  let seqno = -1;
+  let lastSuccess = true
+  let lastError = ''
 
   for (let i = 0; i < maxTimes; i++) {
     // await sleep(1000);
     try {
-      let seqno = await contract.getSeqno();
+      if (seqno === -1 || lastSuccess || lastError.indexOf('seqno') > -1) {
+        seqno = await contract.getSeqno();
+      }
       console.log('seqno' , seqno);
-      await sleep(1100);
+      // await sleep(1100);
       let transfer = await contract.sendTransfer({
         seqno: seqno,
         secretKey: keyPair.secretKey,
@@ -67,7 +73,9 @@ const client = new TonClient({
       console.log(transfer);
       count++;
       console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次成功`);
+      lastSuccess = true
     } catch (error) {
+      lastSuccess = false
       console.log(`第${index}个钱包：【${wallet.address}  】`, error.response.data.code, error.response.data.error)
     }
     
