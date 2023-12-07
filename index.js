@@ -56,6 +56,7 @@ async function main(mnemonic, index) {
     let count = 0;
     let seqno = -1;
     let lastSuccess = true
+    let lastSeqno = -1
     let lastError = ''
 
     for (let i = 0; i < maxTimes; i++) {
@@ -73,7 +74,12 @@ async function main(mnemonic, index) {
           messages: v,
         });
         count++;
-        console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次成功, seqno: ${seqno}, resp： ${transfer}, 当前时间：`, new Date().toLocaleString());
+        if (lastSeqno > seqno) {
+          console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次成功, seqno: ${seqno}, resp： ${transfer}, 当前时间：`, new Date().toLocaleString());
+        } else {
+          console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次交易已发送, seqno: ${seqno}, resp： ${transfer}, 当前时间：`, new Date().toLocaleString());
+        }
+        lastSeqno = seqno
         lastSuccess = true
       } catch (error) {
         lastSuccess = false
