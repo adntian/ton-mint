@@ -5,14 +5,6 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-// Create Client
-const client = new TonClient({
-    endpoint:
-        "https://toncenter.com/api/v2/jsonRPC",
-        // "https://ton.access.orbs.network/55B1c0ff5Bd3F8B62C092Ab4D238bEE463E655B1/1/mainnet/toncenter-api-v2/jsonRPC",
-        //"https://ton.access.orbs.network/44A2c0ff5Bd3F8B62C092Ab4D238bEE463E644A2/1/mainnet/toncenter-api-v2/jsonRPC",
-});
-
 
 // 最大尝试多少次
 const maxTimes = 10000;
@@ -25,8 +17,22 @@ async function main(mnemonic, index) {
     workchain,
     publicKey: keyPair.publicKey,
   });
+// Create Client
+const client = new TonClient({
+    endpoint:
+        "https://toncenter.com/api/v2/jsonRPC",
+        // "https://ton.access.orbs.network/55B1c0ff5Bd3F8B62C092Ab4D238bEE463E655B1/1/mainnet/toncenter-api-v2/jsonRPC",
+        //"https://ton.access.orbs.network/44A2c0ff5Bd3F8B62C092Ab4D238bEE463E644A2/1/mainnet/toncenter-api-v2/jsonRPC",
+});
+
+
+  try {
+     await sleep(1500);
   let contract = client.open(wallet);
   console.log(wallet.address + ' 开始运行');
+  let balance = await contract.getBalance();
+  console.log(`第${index}个钱包：【${wallet.address}  】，余额：${balance}`)
+
 
   let v = [];
 
@@ -42,9 +48,11 @@ async function main(mnemonic, index) {
   let count = 0;
 
   for (let i = 0; i < maxTimes; i++) {
+    // await sleep(1000);
     try {
       let seqno = await contract.getSeqno();
       console.log('seqno' , seqno);
+      await sleep(1100);
       let transfer = await contract.sendTransfer({
         seqno: seqno,
         secretKey: keyPair.secretKey,
@@ -57,8 +65,12 @@ async function main(mnemonic, index) {
     } catch (error) {
       console.log(error.response.data.code, error.response.data.error)
     }
-    await sleep(900);
     
+  }
+  } catch (err) {
+    console.log('create client error', err.response.data.code, err.response.data.error)
+    console.log(`重试第${index}个钱包`)
+    main(mnemonic, index)
   }
 }
 
