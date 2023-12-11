@@ -75,7 +75,7 @@ async function main(mnemonic, index) {
           messages: v,
         });
         count++;
-        if (lastSeqno > seqno) {
+        if (seqno > lastSeqno) {
           console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次成功, seqno: ${seqno}, resp： ${transfer}, 当前时间：`, new Date().toLocaleString());
         } else {
           console.log(`第${index}个钱包：【${wallet.address}  】，第${count}次交易已发送, seqno: ${seqno}, resp： ${transfer}, 当前时间：`, new Date().toLocaleString());
