@@ -47,7 +47,7 @@ async function main(mnemonic, index) {
     for (let i = 0; i < 4; i++) {
       v.push(
         internal({
-          to: `EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c`,
+          // to: `EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c`,
           to: wallet.address,
           value: '0',
           body: 'data:application/json,{"p":"ton-20","op":"mint","tick":"nano","amt":"100000000000"}'
